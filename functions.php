@@ -1,5 +1,5 @@
 <?php
-// works 
+// works
 function displaySVGFiles($fileName)
 {
   // Get the current directory
@@ -146,7 +146,7 @@ function prefix_add_content($content)
   $table_dominate_terp = prefix_generate_table($custom_fields_dominate_terp);
   $table_other_terp = prefix_generate_table($custom_fields_other_terp);
 
-  // prefix_generate_table_3 3 columns 
+  // prefix_generate_table_3 3 columns
   $new_content .= $content;
   $table_flav = prefix_generate_table_3($custom_fields_flav);
   $table_feel = prefix_generate_table_3($custom_fields_feel);
@@ -226,7 +226,7 @@ function prefix_generate_table_3($fields)
   $table = '<table><tbody><tr>';
 
   foreach ($fields as $field) {
-    $field_value = get_post_meta(get_the_ID(), $field, true);
+    $field_value = strtolower(get_post_meta(get_the_ID(), $field, true));
 
     if ($field_value) {
       // Add different SVGs depending on the field value
