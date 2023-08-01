@@ -1,6 +1,6 @@
 <?php
 // works
-function displaySVGFiles($fileName)
+function displaySVGFiles($fileName, $themeColor = '#0CE4A3')
 {
   // Get the current directory
   $currentDir = __DIR__;
@@ -16,14 +16,20 @@ function displaySVGFiles($fileName)
 
   // Check if the file exists
   if (file_exists($filePath)) {
-    // Display the SVG file as an image
+    // Read the SVG file content
+    $svgContent = file_get_contents($filePath);
 
-    return "<img src=\"$filePath\" alt=\"SVG $fileName\">";
+    // Add the default theme color to the SVG content
+    $svgContentWithColor = str_replace('<svg', '<svg fill="' . $themeColor . '"', $svgContent);
+
+    // Return the modified SVG content
+    return $svgContentWithColor;
 
   } else {
-    return "<img src=\"\" alt=\"SVG $fileName\">";
+    return "";
   }
 }
+
 
 // select from tags searchable
 function enqueue_select2_jquery()
@@ -50,12 +56,13 @@ function my_theme_enqueue_styles()
   wp_enqueue_style('child-style', get_stylesheet_directory_uri() . '/style.css', array('parent-style'), wp_get_theme()->get('Version'));
 }
 
-// add custom feilds to posts content funtion
+// add custom feilds to posts content function
 function prefix_add_content($content)
 {
   $custom_fields_aka_ratings_type = array(
     'hcf_aka',
-    'hcf_user_ratings',
+    'hcf_star_ratings',
+    'hcf_ratings_amount',
     'hcf_strain_type'
   );
   $custom_fields_dominate_terp = array(
@@ -68,7 +75,8 @@ function prefix_add_content($content)
   $custom_fields_thc_cbg_cbd = array(
     'hcf_THC',
     'hcf_CBG',
-    'hcf_CBD'
+    'hcf_CBD',
+    'hcf_CBN'
   );
   $custom_fields_flav = array(
     'hcf_flav_1',
@@ -90,18 +98,19 @@ function prefix_add_content($content)
     'hcf_neg_2',
     'hcf_neg_3'
   );
-  $custom_fields_grow = array(
-    'hcf_grow_dif',
-    'hcf_grow_avg_hight',
-    'hcf_grow_avg_yeild',
-    'hcf_grow_time'
-  );
   $custom_fields_parent_child = array(
     'hcf_parent_1',
     'hcf_parent_2',
     'hcf_child_1',
     'hcf_child_2'
   );
+  $custom_fields_grow = array(
+    'hcf_grow_dif',
+    'hcf_grow_avg_hight',
+    'hcf_grow_avg_yeild',
+    'hcf_grow_time'
+  );
+
 
   // check strain_type to add title to tables
   if (esc_attr(get_post_meta(get_the_ID(), 'hcf_strain_type', true))) {
@@ -113,28 +122,25 @@ function prefix_add_content($content)
     if (!empty(get_post_meta(get_the_ID(), 'hcf_seed_link', true))) {
       $seed_link = "<a href=" . get_post_meta(get_the_ID(), 'hcf_seed_link', true) . ">Find " . $title . " Seed Here</a>";
     }
-    if (!empty($table_dominate_terp)) {
+    if (!empty($custom_fields_dominate_terp)) {
       $terp_profile = '<h3>' . $title . ' Terpene Profile</h3>';
     }
-    if (!empty($table_flav)) {
+    if (!empty($custom_fields_flav)) {
       $flavs = '<h3>' . $title . ' Flavors</h3>';
     }
-    if (!empty($table_feel)) {
+    if (!empty($custom_fields_feel)) {
       $feels = '<h3>' . $title . ' Feelings</h3>';
     }
-    if (!empty($table_help)) {
+    if (!empty($custom_fields_help)) {
       $may_help = '<h3>' . $title . ' May help with</h3>';
     }
-    if (!empty($table_neg)) {
+    if (!empty($custom_fields_neg)) {
       $neg = '<h3>' . $title . ' Possible Negatives</h3>';
     }
-    if (!empty($table_neg)) {
-      $neg = '<h3>' . $title . ' Possible Negatives</h3>';
-    }
-    if (!empty($genetics)) {
+    if (!empty($custom_fields_parent_child)) {
       $genetics = '<h3>' . $title . ' Genetics</h3>';
     }
-    if (!empty($grow)) {
+    if (!empty($custom_fields_grow)) {
       $grow = '<h3>' . $title . ' Grow Info</h3>';
     }
   }
@@ -154,10 +160,12 @@ function prefix_add_content($content)
   $table_neg = prefix_generate_table_3($custom_fields_neg);
   $table_parent_child = prefix_generate_table($custom_fields_parent_child);
   $table_grow = prefix_generate_table($custom_fields_grow);
+  $hcf_grow_notes = get_post_meta(get_the_ID(), 'hcf_grow_notes', true);
+
 
   // Add more tables as needed...
   $new_content = $table_aka . $table_thc_cbg_cbd . $terp_profile . $table_dominate_terp .
-    $table_other_terp . $info . $new_content . $flavs . $table_flav . $feels . $table_feel . $may_help . $table_help . $neg . $table_neg . $seed_link . $genetics . $table_parent_child . $grow . $table_grow;
+    $table_other_terp . $info . $new_content . $flavs . $table_flav . $feels . $table_feel . $may_help . $table_help . $neg . $table_neg . $seed_link . $genetics . $table_parent_child . $grow . $table_grow . $hcf_grow_notes;
 
   return $new_content;
 }
@@ -207,7 +215,7 @@ function prefix_generate_table($fields)
           $svg = '';
       }
 
-      $table .= '<tr><td><strong>' . $svg . $field_name . '</strong></td><td>' . esc_attr($field_value) . '</td></tr>';
+      $table .= '<tr><td><strong>' . $svg . $field_name . '</strong></td><td class="custom-value"><strong>' . esc_attr($field_value) . '</strong></td></tr>';
     }
   }
 
@@ -220,7 +228,6 @@ function prefix_generate_table($fields)
   return $table;
 }
 
-
 function prefix_generate_table_3($fields)
 {
   $table = '<table><tbody><tr>';
@@ -232,7 +239,13 @@ function prefix_generate_table_3($fields)
       // Add different SVGs depending on the field value
       $svg = displaySVGFiles($field_value);
 
-      $table .= '<td>' . $svg . $field_value . '</td>';
+      if ($svg) {
+        // Modify the SVG height and width attributes
+        $modifiedSvg = str_replace('<svg', '<svg height="35" width="35"', $svg);
+        $table .= '<td style="vertical-align: middle; text-align: center;" class="custom-value"><strong>' . $modifiedSvg . $field_value . '</strong></td>';
+      } else {
+        $table .= '<td class="custom-value"><strong>' . $field_value . '</strong></td>';
+      }
     }
   }
 
