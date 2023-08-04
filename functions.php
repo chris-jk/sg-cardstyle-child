@@ -115,38 +115,35 @@ function prefix_add_content($content)
   // check strain_type to add title to tables
   if (esc_attr(get_post_meta(get_the_ID(), 'hcf_strain_type', true))) {
     $title = get_the_title();
-    if (!empty($content)) {
-      $info = '<h3>' . $title . ' Info</h3>';
-    }
-    ;
-    if (!empty(get_post_meta(get_the_ID(), 'hcf_seed_link', true))) {
-      $seed_link = "<a href=" . get_post_meta(get_the_ID(), 'hcf_seed_link', true) . ">Find " . $title . " Seed Here</a>";
-    }
-    if (!empty($custom_fields_dominate_terp)) {
-      $terp_profile = '<h3>' . $title . ' Terpene Profile</h3>';
-    }
-    if (!empty($custom_fields_flav)) {
-      $flavs = '<h3>' . $title . ' Flavors</h3>';
-    }
-    if (!empty($custom_fields_feel)) {
-      $feels = '<h3>' . $title . ' Feelings</h3>';
-    }
-    if (!empty($custom_fields_help)) {
-      $may_help = '<h3>' . $title . ' May help with</h3>';
-    }
-    if (!empty($custom_fields_neg)) {
-      $neg = '<h3>' . $title . ' Possible Negatives</h3>';
-    }
-    if (!empty($custom_fields_parent_child)) {
-      $genetics = '<h3>' . $title . ' Genetics</h3>';
-    }
-    if (!empty($custom_fields_grow)) {
-      $grow = '<h3>' . $title . ' Grow Info</h3>';
-    }
+    $info = '<h3>' . $title . ' Info</h3>';
   }
-  ;
+  if (!empty(get_post_meta(get_the_ID(), 'hcf_seed_link', true))) {
+    $seed_link = "<a href=" . get_post_meta(get_the_ID(), 'hcf_seed_link', true) . ">Find " . $title . " Seed Here</a>";
+  }
+  if (!empty(get_post_meta(get_the_ID(), 'hcf_dominate_terp', true))) {
+    $terp_profile = '<h3>' . $title . ' Terpene Profile</h3>';
+  }
 
-  // prefix_generate_table 2 columns name:value
+  if (!empty(get_post_meta(get_the_ID(), 'hcf_flav_1', true))) {
+    $flavs = '<h3>' . $title . ' Flavors</h3>';
+  }
+  if (!empty(get_post_meta(get_the_ID(), 'hcf_feel_1', true))) {
+    $feels = '<h3>' . $title . ' Feelings</h3>';
+  }
+  if (!empty(get_post_meta(get_the_ID(), 'hcf_help_1', true))) {
+    $may_help = '<h3>' . $title . ' May help with</h3>';
+  }
+  if (!empty(get_post_meta(get_the_ID(), 'hcf_neg_1', true))) {
+    $neg = '<h3>' . $title . ' Possible Negatives</h3>';
+  }
+  if (!empty(get_post_meta(get_the_ID(), 'hcf_parent_1', true) || !empty(get_post_meta(get_the_ID(), 'hcf_child_1', true)))) {
+    $genetics = '<h3>' . $title . ' Genetics</h3>';
+  }
+  if (!empty(get_post_meta(get_the_ID(), 'hcf_grow_dif', true))) {
+    $grow = '<h3>' . $title . ' Grow Info</h3>';
+  }
+
+  //fix_generate_table 2 columns name:value
   $table_aka = prefix_generate_table($custom_fields_aka_ratings_type);
   $table_thc_cbg_cbd = prefix_generate_table($custom_fields_thc_cbg_cbd);
   $table_dominate_terp = prefix_generate_table($custom_fields_dominate_terp);
@@ -164,7 +161,7 @@ function prefix_add_content($content)
 
 
   // Add more tables as needed...
-  $new_content = $table_aka . $table_thc_cbg_cbd . $terp_profile . $table_dominate_terp .
+  $new_content = $table_dominate_terp . $table_aka . $table_thc_cbg_cbd . $terp_profile . $table_dominate_terp .
     $table_other_terp . $info . $new_content . $flavs . $table_flav . $feels . $table_feel . $may_help . $table_help . $neg . $table_neg . $seed_link . $genetics . $table_parent_child . $grow . $table_grow . $hcf_grow_notes;
 
   return $new_content;
