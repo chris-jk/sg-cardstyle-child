@@ -247,9 +247,9 @@ function prefix_generate_table_3($fields)
       if ($svg) {
         // Modify the SVG height and width attributes
         $modifiedSvg = str_replace('<svg', '<svg height="35" width="35"', $svg);
-        $table .= '<td style="vertical-align: middle; text-align: center;" class="custom-value"><strong>' . $modifiedSvg . $field_value . '</strong></td>';
+        $table .= '<td style="vertical-align: middle; text-align: center;" class="custom-value"><strong><a href="https://strainguide.app/category/' . $field_value . '">' . $modifiedSvg . '<br>' . $field_value . '</a></strong></td>';
       } else {
-        $table .= '<td class="custom-value"><strong>' . $field_value . '</strong></td>';
+        $table .= '<td class="custom-value"><strong><a href="https://strainguide.app/category/' . $field_value . '">' . $field_value . '</a></strong></td>';
       }
     }
   }
@@ -257,6 +257,8 @@ function prefix_generate_table_3($fields)
   $table .= '</tr></tbody></table>';
 
   return $table;
+
+
 }
 
 function cat_is_strains()
