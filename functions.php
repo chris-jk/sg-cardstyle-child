@@ -214,9 +214,9 @@ function prefix_generate_table($fields)
           $svg = '';
       }
 
-            $table .= '<tr>';
+      $table .= '<tr>';
       $table .= '<td><strong>' . $svg . $field_name . '</strong></td>';
-            $table .= '<td class="custom-value"><strong><a href="https://strainguide.app/' . urlencode(esc_attr($field_value)) . '">' . esc_html($field_value) . '</a></strong></td>';
+      $table .= '<td class="custom-value"><strong><a href="https://strainguide.app/' . urlencode(esc_attr($field_value)) . '">' . esc_html($field_value) . '</a></strong></td>';
 
       $table .= '</tr>';
 
