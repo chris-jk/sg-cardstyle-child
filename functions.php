@@ -115,6 +115,8 @@ function prefix_add_content($content)
   // check strain_type to add title to tables
   if (esc_attr(get_post_meta(get_the_ID(), 'hcf_strain_type', true))) {
     $title = get_the_title();
+  }
+  if (esc_attr(get_post_meta(get_the_ID(), 'hcf_strain_type', true))) {
     $info = '<h3>' . $title . ' Info</h3>';
   }
   if (!empty(get_post_meta(get_the_ID(), 'hcf_seed_link', true))) {
@@ -212,7 +214,13 @@ function prefix_generate_table($fields)
           $svg = '';
       }
 
-      $table .= '<tr><td><strong>' . $svg . $field_name . '</strong></td><td class="custom-value"><strong>' . esc_attr($field_value) . '</strong></td></tr>';
+            $table .= '<tr>';
+      $table .= '<td><strong>' . $svg . $field_name . '</strong></td>';
+            $table .= '<td class="custom-value"><strong><a href="https://strainguide.app/' . urlencode(esc_attr($field_value)) . '">' . esc_html($field_value) . '</a></strong></td>';
+
+      $table .= '</tr>';
+
+
     }
   }
 
