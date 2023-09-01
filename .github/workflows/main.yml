@@ -23,6 +23,6 @@ jobs:
                   key: ${{ secrets.SSH_KEY }}
                   port: 22
                   script: |
-                      cd cd stack/wordpress/wp-content/themes/cardstyle-child/
+                      cd stack/wordpress/wp-content/themes/cardstyle-child/
                       git pull origin production
                       git status
