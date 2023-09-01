@@ -24,5 +24,5 @@ jobs:
                   port: 22
                   script: |
                       cd stack/wordpress/wp-content/themes/sg-cardstyle-child/
-                      git pull production
+                      git pull origin production
                       git status
