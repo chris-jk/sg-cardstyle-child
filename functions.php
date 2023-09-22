@@ -272,3 +272,19 @@ function cat_is_strains()
   return $isStrains;
 
 }
+
+// show page title on page in shortcode
+function page_title_shortcode($atts)
+{
+  $atts = shortcode_atts(
+    array(
+      'id' => get_the_ID(),
+    ),
+    $atts,
+    'page_title'
+  );
+
+  $page_title = get_the_title($atts['id']);
+  return $page_title;
+}
+add_shortcode('page_title', 'page_title_shortcode');
